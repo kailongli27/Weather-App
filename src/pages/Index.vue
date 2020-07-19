@@ -28,10 +28,13 @@
         ]"
       />
     </div>
-    <div class="self-center q-mt-xl">
-      <q-card class="rounded q-pa-md q-mt-lg text-center">
-        <div>{{ this.queryCity.name }}, {{this.queryCity.country}}</div>
-        <div>{{ this.queryCity.temp }}</div>
+    <div v-if="unitSelection === 'metric'" class="self-center q-mt-xl">
+      <q-card class="rounded q-pa-lg q-mt-lg text-center">
+        <div class="text-h4 q-mb-sm">{{ this.queryCity.name }}, {{this.queryCity.country}}</div>
+        <div class="text-h5 text-orange-10">{{ this.queryCity.temp }}</div>
+        <div class="text-italic text-no-wrap q-mb-md">Feels like {{ this.queryCity.feelsLike }}</div>
+        <div>{{ this.queryCity.description }}</div>
+        <div><q-img :src="this.queryCity.iconURL" alt="Weather icon"/></div>
       </q-card>
     </div>
   </q-page>
@@ -52,7 +55,10 @@ export default {
       queryCity: {
         name: null,
         country: null,
-        temp: null
+        temp: null,
+        description: null,
+        feelsLike: null,
+        iconURL: null
       }
     }
   },
@@ -65,6 +71,10 @@ export default {
           this.queryCity.name = res.data.name
           this.queryCity.country = res.data.sys.country
           this.queryCity.temp = res.data.main.temp
+          this.queryCity.description = res.data.weather[0].description.charAt(0).toUpperCase() + res.data.weather[0].description.slice(1)
+          this.queryCity.feelsLike = res.data.main.feels_like
+          this.queryCity.iconURL = `http://openweathermap.org/img/wn/${res.data.weather[0].icon}@2x.png`
+          console.log(this.queryCity.iconURL)
         })
         .catch(() => {
           alert('City not found!')
