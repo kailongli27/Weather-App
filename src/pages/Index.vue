@@ -14,6 +14,7 @@
       </q-input>
       <q-btn-toggle
         v-model="unitSelection"
+        @click="unitsChange()"
         class="self-center q-mt-md q-mb-md"
         rounded
         ripple
@@ -28,16 +29,16 @@
         ]"
       />
     </div>
-    <div v-if="unitSelection === 'metric'" class="self-center q-mt-xl">
+    <div class="self-center q-mt-xl">
       <q-card class="rounded q-pa-sm q-mt-lg" style="width: 500px">
         <q-card-section class="column col">
           <div class="row no-wrap items-center">
             <div class="text-h4 text-no-wrap">{{ this.queryCity.name }}, {{this.queryCity.country}}</div>
             <q-space/>
-            <div class="text-h5 text-orange-10">{{ this.queryCity.temp }}&deg;C</div>
+            <div v-if="unitSelection === 'metric'" class="text-h5 text-orange-10">{{ this.queryCity.temp }}&deg;C</div>
+            <div v-else class="text-h5 text-orange-10">{{ this.queryCity.temp }}&deg;F</div>
           </div>
           <q-separator class="q-mb-md" color="dark"/>
-          <!-- <div class="text-italic text-no-wrap q-mb-md">Feels like {{ this.queryCity.feelsLike }}</div> -->
           <div class="column text-center">
             <div class="self-center text-center text-no-wrap text-h5">{{ this.queryCity.description }}</div>
             <div class="text-center q-mb-lg">
@@ -45,14 +46,15 @@
             </div>
           </div>
           <div class="row">
-            <div class="text-h6 text-weight-regular">High: </div>
+            <div class="text-h6 text-weight-regular">High: {{ this.queryCity.maxTemp }}</div>
             <q-space/>
-            <div class="text-h6 text-weight-regular">Wind: </div>
+            <div v-if="unitSelection === 'metric'" class="text-h6 text-weight-regular">Wind: {{ this.queryCity.wind }}&#13223;</div>
+            <div v-else class="text-h6 text-weight-regular">Wind: {{ this.queryCity.wind }} mph</div>
           </div>
           <div class="row">
-            <div class="text-h6 text-weight-regular">Low: </div>
+            <div class="text-h6 text-weight-regular">Low: {{ this.queryCity.minTemp }}</div>
             <q-space/>
-            <div class="text-h6 text-weight-regular">Humidity: </div>
+            <div class="text-h6 text-weight-regular">Humidity: {{ this.queryCity.humidity }}%</div>
           </div>
         </q-card-section>
       </q-card>
@@ -76,9 +78,12 @@ export default {
         name: null,
         country: null,
         temp: null,
+        minTemp: null,
+        maxTemp: null,
         description: null,
-        feelsLike: null,
-        iconURL: null
+        iconURL: null,
+        wind: null,
+        humidity: null
       }
     }
   },
@@ -92,13 +97,24 @@ export default {
           this.queryCity.country = res.data.sys.country
           this.queryCity.temp = res.data.main.temp
           this.queryCity.description = res.data.weather[0].description.charAt(0).toUpperCase() + res.data.weather[0].description.slice(1)
-          this.queryCity.feelsLike = res.data.main.feels_like
           this.queryCity.iconURL = `http://openweathermap.org/img/wn/${res.data.weather[0].icon}@2x.png`
-          console.log(this.queryCity.iconURL)
+          this.queryCity.minTemp = res.data.main.temp_min
+          this.queryCity.maxTemp = res.data.main.temp_max
+          this.queryCity.wind = res.data.wind.speed
+          this.queryCity.humidity = res.data.main.humidity
         })
         .catch(() => {
           alert('City not found!')
           console.log('City not found!')
+        })
+    },
+    unitsChange () {
+      axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=${this.unitSelection}&appid=${this.weatherAPI.key}`)
+        .then((res) => {
+          this.queryCity.temp = res.data.main.temp
+          this.queryCity.minTemp = res.data.main.temp_min
+          this.queryCity.maxTemp = res.data.main.temp_max
+          this.queryCity.wind = res.data.wind.speed
         })
     }
   }
