@@ -29,12 +29,32 @@
       />
     </div>
     <div v-if="unitSelection === 'metric'" class="self-center q-mt-xl">
-      <q-card class="rounded q-pa-lg q-mt-lg text-center">
-        <div class="text-h4 q-mb-sm">{{ this.queryCity.name }}, {{this.queryCity.country}}</div>
-        <div class="text-h5 text-orange-10">{{ this.queryCity.temp }}</div>
-        <div class="text-italic text-no-wrap q-mb-md">Feels like {{ this.queryCity.feelsLike }}</div>
-        <div>{{ this.queryCity.description }}</div>
-        <div><q-img :src="this.queryCity.iconURL" alt="Weather icon"/></div>
+      <q-card class="rounded q-pa-sm q-mt-lg" style="width: 500px">
+        <q-card-section class="column col">
+          <div class="row no-wrap items-center">
+            <div class="text-h4 text-no-wrap">{{ this.queryCity.name }}, {{this.queryCity.country}}</div>
+            <q-space/>
+            <div class="text-h5 text-orange-10">{{ this.queryCity.temp }}&deg;C</div>
+          </div>
+          <q-separator class="q-mb-md" color="dark"/>
+          <!-- <div class="text-italic text-no-wrap q-mb-md">Feels like {{ this.queryCity.feelsLike }}</div> -->
+          <div class="column text-center">
+            <div class="self-center text-center text-no-wrap text-h5">{{ this.queryCity.description }}</div>
+            <div class="text-center q-mb-lg">
+              <q-img :src="this.queryCity.iconURL" alt="Weather icon" width="12%" class="self-center"/>
+            </div>
+          </div>
+          <div class="row">
+            <div class="text-h6 text-weight-regular">High: </div>
+            <q-space/>
+            <div class="text-h6 text-weight-regular">Wind: </div>
+          </div>
+          <div class="row">
+            <div class="text-h6 text-weight-regular">Low: </div>
+            <q-space/>
+            <div class="text-h6 text-weight-regular">Humidity: </div>
+          </div>
+        </q-card-section>
       </q-card>
     </div>
   </q-page>
