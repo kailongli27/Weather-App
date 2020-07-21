@@ -101,9 +101,8 @@ export default {
     getWeatherData () {
       this.queryError = false
       this.queryEntered = true
-      axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=${this.unitSelection}&appid=${this.weatherAPI.key}`)
+      axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=${this.unitSelection}&appid=${this.weatherAPI.key}`)
         .then((res) => {
-          console.log(res)
           this.queryCity.name = res.data.name
           this.queryCity.country = res.data.sys.country
           this.queryCity.temp = res.data.main.temp
@@ -116,8 +115,6 @@ export default {
         })
         .catch(() => {
           this.queryError = true
-          console.log('ERROR')
-          console.log(this.queryError)
         })
     },
     unitsChange () {
