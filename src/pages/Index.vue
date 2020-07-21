@@ -107,7 +107,7 @@ export default {
           this.queryCity.country = res.data.sys.country
           this.queryCity.temp = res.data.main.temp
           this.queryCity.description = res.data.weather[0].description.charAt(0).toUpperCase() + res.data.weather[0].description.slice(1)
-          this.queryCity.iconURL = `http://openweathermap.org/img/wn/${res.data.weather[0].icon}@2x.png`
+          this.queryCity.iconURL = `https://openweathermap.org/img/wn/${res.data.weather[0].icon}@2x.png`
           this.queryCity.minTemp = res.data.main.temp_min
           this.queryCity.maxTemp = res.data.main.temp_max
           this.queryCity.wind = res.data.wind.speed
@@ -118,7 +118,7 @@ export default {
         })
     },
     unitsChange () {
-      axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=${this.unitSelection}&appid=${this.weatherAPI.key}`)
+      axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=${this.unitSelection}&appid=${this.weatherAPI.key}`)
         .then((res) => {
           this.queryCity.temp = res.data.main.temp
           this.queryCity.minTemp = res.data.main.temp_min
