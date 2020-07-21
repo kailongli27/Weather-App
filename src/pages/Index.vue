@@ -29,7 +29,7 @@
         ]"
       />
     </div>
-    <div class="self-center q-mt-xl">
+    <div v-if="queryEntered && !queryError" class="self-center q-mt-xl">
       <q-card class="rounded q-pa-sm q-mt-lg" style="width: 500px">
         <q-card-section class="column col">
           <div class="row no-wrap items-center">
@@ -48,8 +48,8 @@
           <div class="row">
             <div class="text-h6 text-weight-regular">High: {{ this.queryCity.maxTemp }}</div>
             <q-space/>
-            <div v-if="unitSelection === 'metric'" class="text-h6 text-weight-regular">Wind: {{ this.queryCity.wind }}&#13223;</div>
-            <div v-else class="text-h6 text-weight-regular">Wind: {{ this.queryCity.wind }} mph</div>
+            <div v-if="unitSelection === 'metric'" class="text-h6 text-weight-regular">Wind: {{ this.queryCity.wind }} &#13223;</div>
+            <div v-else class="text-h6 text-weight-regular row">Wind: {{ this.queryCity.wind }} <div class="text-italic">mph</div></div>
           </div>
           <div class="row">
             <div class="text-h6 text-weight-regular">Low: {{ this.queryCity.minTemp }}</div>
@@ -58,6 +58,14 @@
           </div>
         </q-card-section>
       </q-card>
+    </div>
+    <div v-else-if="!queryEntered" class="text-center">
+      <q-img src="https://media.giphy.com/media/Js8fMtFd8ZZUQbTXzy/giphy.gif" alt="Happy Summer Sticker By Odsanyu" width="25%" />
+      <div class="text-h5 text-italic text-grey-6">Search for a location to check the weather!</div>
+    </div>
+    <div v-else class="text-center">
+      <q-img src="https://media.giphy.com/media/Mb4gjv0pVz7yuJPwNG/giphy.gif" alt="Happy Summer Sticker By Odsanyu" width="25%" class="q-mt-lg" />
+      <div class="text-h5 text-italic text-grey-6 q-mt-md">Oops, I couldn't find your city. Check for typos!</div>
     </div>
   </q-page>
 </template>
@@ -74,6 +82,7 @@ export default {
       weatherAPI: {
         key: 'ad0ddaff0572e83a6fcf96cf7a2e3ade'
       },
+      queryEntered: false,
       queryCity: {
         name: null,
         country: null,
@@ -84,12 +93,14 @@ export default {
         iconURL: null,
         wind: null,
         humidity: null
-      }
+      },
+      queryError: false
     }
   },
   methods: {
     getWeatherData () {
-      console.log(this.city)
+      this.queryError = false
+      this.queryEntered = true
       axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=${this.unitSelection}&appid=${this.weatherAPI.key}`)
         .then((res) => {
           console.log(res)
@@ -104,8 +115,9 @@ export default {
           this.queryCity.humidity = res.data.main.humidity
         })
         .catch(() => {
-          alert('City not found!')
-          console.log('City not found!')
+          this.queryError = true
+          console.log('ERROR')
+          console.log(this.queryError)
         })
     },
     unitsChange () {
